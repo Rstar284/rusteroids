@@ -3,5 +3,4 @@ target/
 build/
 dist/
 
-package-lock.json
-package.json
+webpack.config.js
