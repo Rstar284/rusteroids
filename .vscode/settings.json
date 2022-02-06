@@ -1,0 +1,12 @@
+{
+    "files.insertFinalNewline": true,
+    "editor.formatOnSave": true,
+
+    "[rust]": {
+        "editor.defaultFormatter": "matklad.rust-analyzer",
+    },
+
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}
