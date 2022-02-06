@@ -7,6 +7,7 @@ name = "asteroids"
 version = "1.0.0"
 dependencies = [
  "rand",
+ "rand_core",
  "rand_pcg",
  "wasm-bindgen",
 ]

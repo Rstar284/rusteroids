@@ -1,5 +1,4 @@
 use rand::Rng;
-use rand_pcg::Pcg32;
 use std::borrow::Borrow;
 use std::f64::consts::PI;
 
@@ -77,7 +76,12 @@ impl Dispersion {
         }
     }
 
-    fn movement(&self, rng: &mut Pcg32, deviation: &Deviation, direction: f64) -> (Movement, f64) {
+    fn movement<R: Rng + ?Sized>(
+        &self,
+        rng: &mut R,
+        deviation: &Deviation,
+        direction: f64,
+    ) -> (Movement, f64) {
         let Dispersion {
             velocity,
             speed,
@@ -85,10 +89,10 @@ impl Dispersion {
             ..
         } = &self;
 
-        let speed = rng.gen_range(-1.0, 1.0) * deviation.scale_speed * speed + speed;
-        let distance = rng.gen_range(-1.0, 1.0) * deviation.scale_distance * distance + distance;
-        let direction = rng.gen_range(-1.0, 1.0) * deviation.direction + direction;
-        let angular_velocity = rng.gen_range(-1.0, 1.0) * deviation.angular_velocity;
+        let speed = rng.gen_range(-1.0..1.0) * deviation.scale_speed * speed + speed;
+        let distance = rng.gen_range(-1.0..1.0) * deviation.scale_distance * distance + distance;
+        let direction = rng.gen_range(-1.0..1.0) * deviation.direction + direction;
+        let angular_velocity = rng.gen_range(-1.0..1.0) * deviation.angular_velocity;
         (
             Movement {
                 velocity: velocity.translate(speed, direction),
@@ -98,7 +102,10 @@ impl Dispersion {
         )
     }
 
-    pub fn burst(&self, rng: &mut Pcg32, count: u32) -> Vec<Particle> {
+    pub fn burst<R>(&self, rng: &mut R, count: u32) -> Vec<Particle>
+    where
+        R: Rng + ?Sized,
+    {
         let central_angle = (2.0 * PI) / (count as f64);
         (0..count)
             .map(|i| {
@@ -111,16 +118,17 @@ impl Dispersion {
                     },
                     movement,
                     expiration: Timer::new(duration),
-                    radius: rng.gen_range(0.5, 2.5),
+                    radius: rng.gen_range(0.5..2.5),
                 }
             })
             .collect()
     }
 
-    pub fn explode<T, P>(&self, rng: &mut Pcg32, edges: T) -> Vec<Particle>
+    pub fn explode<T, P, R>(&self, rng: &mut R, edges: T) -> Vec<Particle>
     where
         T: IntoIterator<Item = (P, P)>,
         P: Borrow<Point>,
+        R: Rng + ?Sized,
     {
         edges
             .into_iter()
