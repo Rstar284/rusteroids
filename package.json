@@ -1,6 +1,11 @@
 {
   "name": "@xryshirfxn/asteroids",
   "version": "1.0.0",
+  "scripts": {
+    "lint": "cargo-clippy && npx eslint .",
+    "fmt": "npx prettier --write .",
+    "build": "bash build.sh"
+  },
   "devDependencies": {
     "@wasm-tool/wasm-pack-plugin": "^1.6.0",
     "css-loader": "^6.6.0",
