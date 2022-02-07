@@ -1,7 +1,7 @@
-import init, { App } from './wasm/asteroids.js';
+import init, { App } from './wasm/rusteroids.js';
 
-const width = 1200;
-const height = 900;
+const height = window.screen.height;
+const width = window.screen.width;
 
 const screenCanvas = document.querySelector('canvas');
 const screenContext = screenCanvas.getContext('2d');
@@ -11,34 +11,47 @@ const effectsCanvas = document.createElement('canvas');
 const effectsContext = effectsCanvas.getContext('2d');
 const effects = effectsContext.filter ? true : false;
 
+let app, memory, time;
 let flat = false;
 let frames = 0;
 let seconds = 0;
 
-let app;
-let memory;
-let time;
+function resize() {
+    const _height = window.screen.height;
+    const _width = window.screen.width;
+
+    effectsCanvas.height = _height;
+    effectsCanvas.width = _width;
+
+    screenCanvas.height = _height;
+    screenCanvas.width = _width;
+
+    drawingCanvas.height = 3 * _height;
+    drawingCanvas.width = 3 * _width;
+}
 
 async function main() {
-    drawingCanvas.width = 3 * width;
+    effectsCanvas.height = height;
+    effectsCanvas.width = width;
+
+    screenCanvas.style.opacity = '1';
+    screenCanvas.height = height;
+    screenCanvas.width = width;
+
     drawingCanvas.height = 3 * height;
-    drawingContext.strokeStyle = '#eaf9ff';
+    drawingCanvas.width = 3 * width;
+
+    drawingContext.strokeStyle = '#9c9c9c';
     drawingContext.lineCap = 'round';
     drawingContext.lineJoin = 'round';
     drawingContext.setTransform(1, 0, 0, 1, width, height);
 
-    effectsCanvas.width = width;
-    effectsCanvas.height = height;
-
-    screenCanvas.width = width;
-    screenCanvas.height = height;
-    screenCanvas.style.opacity = '1';
-
-    document.querySelector('main').style.visibility = 'visible';
+    document.querySelector('body').style.visibility = 'visible';
 
     window.addEventListener('keydown', handleKey(true));
     window.addEventListener('keyup', handleKey(false));
-    screenCanvas.addEventListener('click', toggleFlat);
+    window.addEventListener('click', toggleFlat);
+    window.addEventListener('resive', resize);
 
     const wasm = await init();
     memory = wasm.memory;
@@ -55,14 +68,15 @@ function loop(now) {
     draw();
     requestAnimationFrame(loop);
 
-    // if frame rate is low, enable flat mode
+    // If frame rate is low, enable flat mode
     if (effects && !flat && dt) {
         frames += 1;
         seconds += dt;
         if (2 <= seconds) {
-            if (frames / seconds < 45) {
+            if (frames / seconds < 30) {
                 toggleFlat();
             }
+
             frames = 0;
             seconds = 0;
         }
@@ -71,10 +85,12 @@ function loop(now) {
 
 function toggleFlat() {
     flat = !flat;
+
+    document.body.className = flat ? 'flat' : '';
     screenCanvas.className = flat ? 'flat' : '';
 }
 
-// controls
+// Controls
 
 const controls = {
     left: false,
@@ -108,7 +124,11 @@ function handleKey(down) {
 }
 
 function keyToControl(key) {
-    switch (event.key.toLowerCase()) {
+    switch (key.toLowerCase()) {
+        /* case 'escape':
+        case 'r':
+            app.free(); */
+
         case 'arrowleft':
         case 'j':
             return 'left';
@@ -135,10 +155,10 @@ function keyToControl(key) {
     }
 }
 
-// drawing
+// Drawing
 
 function draw() {
-    // render
+    // Render
     const list = app.render();
     const length = list.length();
     const paths = new Uint32Array(memory.buffer, list.paths(), length * 2);
@@ -150,7 +170,7 @@ function draw() {
         list.points_length() * 2
     );
 
-    // drawing
+    // Drawing
     drawingContext.clearRect(-width, -height, 3 * width, 3 * height);
     for (let i = 0; i < length; i += 1) {
         drawPoints(
@@ -164,7 +184,7 @@ function draw() {
     }
     list.free();
 
-    // drawing -> screen
+    // Drawing -> Screen
     screenContext.clearRect(0, 0, width, height);
     for (let row in [0, 1, 2]) {
         for (let col in [0, 1, 2]) {
@@ -182,11 +202,12 @@ function draw() {
         }
     }
 
-    // effects -> screen
+    // Effects -> Screen
     if (effects && !flat) {
         effectsContext.clearRect(0, 0, width, height);
         effectsContext.globalAlpha = 0.4;
         effectsContext.filter = 'blur(20px)';
+        effectsContext.shadowBlur = '10';
         effectsContext.drawImage(screenCanvas, 0, 0, width, height);
         effectsContext.filter = 'blur(3px)';
         effectsContext.drawImage(screenCanvas, 0, 0, width, height);

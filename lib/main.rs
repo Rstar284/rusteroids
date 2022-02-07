@@ -15,9 +15,7 @@ mod util;
 pub mod render;
 
 use control::Controls;
-// use font::FontLibrary;
 use game::Game;
-// use typography::Font;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 

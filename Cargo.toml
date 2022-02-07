@@ -1,5 +1,5 @@
 [package]
-name = "asteroids"
+name = "rusteroids"
 version = "1.0.0"
 edition = "2021"
 
@@ -9,6 +9,8 @@ rand = "0.8.4"
 rand_pcg = "0.3.1"
 rand_core = "0.6.3"
 getrandom = { version = "0.2.4", features = ["js"] }
+js-sys = "0.3.55"
+web-sys = { version = "0.3.56", features = ["Screen", "Window", "console"] }
 
 [lib]
 crate-type = ["cdylib"]

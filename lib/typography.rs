@@ -18,6 +18,7 @@ impl Font {
     pub fn new(height: f64) -> Self {
         let scale = height / master::HEIGHT as f64;
         let letter_spacing = 2.0;
+
         Font {
             height,
             width: scale * master::WIDTH as f64 + letter_spacing,
@@ -39,6 +40,7 @@ impl Font {
             Align::Center => 0.5 * text.len() as f64 * self.width,
             Align::Right => text.len() as f64 * self.width,
         };
+
         let mut position = Point::new(x - offset_x, y - self.height);
         let mut line = Vec::new();
         for c in text.chars() {
@@ -48,6 +50,7 @@ impl Font {
             line.extend(glyph);
             position.x += self.width;
         }
+
         line
     }
 }
@@ -82,11 +85,14 @@ mod path {
                             if 1 < polyline.len() {
                                 polylines.push(polyline);
                             }
+
                             polyline = vec![to_point(scale, x, y)];
                         }
+
                         &Command::L(x, y) => {
                             polyline.push(to_point(scale, x, y));
                         }
+
                         &Command::C(x2, y2, x3, y3, x4, y4) => {
                             if let Some(p1) = polyline.last().map(|p| p.clone()) {
                                 let points = flatten_bezier(
@@ -99,18 +105,21 @@ mod path {
                                 polyline.extend(points);
                             }
                         }
+
                         &Command::H(x) => {
                             if let Some(mut point) = polyline.last().map(|p| p.clone()) {
                                 point.x = scale * x as f64;
                                 polyline.push(point)
                             }
                         }
+
                         &Command::V(y) => {
                             if let Some(mut point) = polyline.last().map(|p| p.clone()) {
                                 point.y = scale * y as f64;
                                 polyline.push(point)
                             }
                         }
+
                         &Command::Z => {
                             if let Some(point) = polyline.first().map(|p| p.clone()) {
                                 polyline.push(point)
@@ -118,9 +127,11 @@ mod path {
                         }
                     }
                 }
+
                 if 1 < polyline.len() {
                     polylines.push(polyline);
                 }
+
                 polylines
             } else {
                 Vec::new()
@@ -205,6 +216,7 @@ mod master {
         V(33),
         C(2, 41, 8, 48, 16, 48),
     ];
+
     const DIGIT_1: [Command; 3] = [M(9, 7), L(21, 0), V(48)];
     const DIGIT_2: [Command; 6] = [
         M(29, 48),
@@ -214,6 +226,7 @@ mod master {
         C(27, 6, 23, 0, 15, 0),
         C(9, 0, 5, 4, 4, 8),
     ];
+
     const DIGIT_3: [Command; 7] = [
         M(5, 0),
         H(27),
@@ -223,6 +236,7 @@ mod master {
         C(30, 42, 24, 48, 16, 48),
         C(10, 48, 5, 45, 3, 39),
     ];
+
     const DIGIT_4: [Command; 5] = [M(21, 0), L(2, 34), H(30), M(24, 48), V(18)];
     const DIGIT_5: [Command; 7] = [
         M(27, 0),
@@ -233,6 +247,7 @@ mod master {
         C(30, 42, 24, 48, 16, 48),
         C(10, 48, 5, 45, 3, 39),
     ];
+
     const DIGIT_6: [Command; 7] = [
         M(20, 0),
         L(5, 24),
@@ -242,6 +257,7 @@ mod master {
         C(8, 48, 2, 42, 2, 34),
         C(2, 31, 3, 27, 5, 24),
     ];
+
     const DIGIT_7: [Command; 3] = [M(3, 0), H(29), L(11, 48)];
     const DIGIT_8: [Command; 10] = [
         M(16, 22),
@@ -255,6 +271,7 @@ mod master {
         C(10, 0, 4, 4, 4, 11),
         C(4, 18, 10, 22, 16, 22),
     ];
+
     const DIGIT_9: [Command; 7] = [
         M(12, 48),
         L(27, 24),
@@ -264,6 +281,7 @@ mod master {
         C(24, 0, 30, 6, 30, 14),
         C(30, 17, 29, 21, 27, 24),
     ];
+
     const UPPERCASE_A: [Command; 5] = [M(0, 48), L(16, 0), L(32, 48), M(6, 30), H(26)];
     const UPPERCASE_B: [Command; 9] = [
         M(3, 22),
@@ -276,6 +294,7 @@ mod master {
         C(22, 0, 28, 4, 28, 11),
         C(28, 18, 22, 22, 16, 22),
     ];
+
     const UPPERCASE_C: [Command; 5] = [
         M(29, 40),
         C(26, 45, 22, 48, 17, 48),
@@ -283,6 +302,7 @@ mod master {
         C(1, 9, 8, 0, 17, 0),
         C(22, 0, 26, 3, 29, 8),
     ];
+
     const UPPERCASE_D: [Command; 6] = [
         M(30, 24),
         C(30, 9, 23, 0, 14, 0),
@@ -302,6 +322,7 @@ mod master {
         V(27),
         H(15),
     ];
+
     const UPPERCASE_H: [Command; 6] = [M(2, 0), V(48), M(30, 0), V(48), M(2, 24), H(30)];
     const UPPERCASE_I: [Command; 6] = [M(16, 0), V(48), M(9, 0), H(23), M(9, 48), H(23)];
     const UPPERCASE_J: [Command; 4] = [
@@ -310,6 +331,7 @@ mod master {
         C(25, 42, 20, 48, 13, 48),
         C(8, 48, 4, 45, 2, 40),
     ];
+
     const UPPERCASE_K: [Command; 6] = [M(2, 0), V(48), M(29, 0), L(2, 30), M(31, 48), L(11, 20)];
     const UPPERCASE_L: [Command; 3] = [M(3, 0), V(48), H(29)];
     const UPPERCASE_M: [Command; 5] = [M(0, 48), V(0), L(16, 30), L(32, 0), V(48)];
@@ -321,6 +343,7 @@ mod master {
         C(0, 39, 7, 48, 16, 48),
         C(25, 48, 32, 39, 32, 24),
     ];
+
     const UPPERCASE_P: [Command; 6] = [
         M(4, 48),
         V(0),
@@ -329,6 +352,7 @@ mod master {
         C(29, 21, 23, 26, 15, 26),
         H(4),
     ];
+
     const UPPERCASE_Q: [Command; 7] = [
         M(18, 34),
         L(32, 48),
@@ -338,6 +362,7 @@ mod master {
         C(7, 48, 0, 39, 0, 24),
         C(0, 9, 7, 0, 16, 0),
     ];
+
     const UPPERCASE_R: [Command; 8] = [
         M(4, 48),
         V(0),
@@ -348,6 +373,7 @@ mod master {
         M(15, 26),
         L(31, 48),
     ];
+
     const UPPERCASE_S: [Command; 7] = [
         M(26, 5),
         C(24, 2, 20, 0, 16, 0),
@@ -357,6 +383,7 @@ mod master {
         C(29, 43, 23, 48, 16, 48),
         C(10, 48, 5, 45, 3, 40),
     ];
+
     const UPPERCASE_T: [Command; 4] = [M(16, 0), V(48), M(2, 0), H(30)];
     const UPPERCASE_U: [Command; 5] = [
         M(30, 0),
@@ -365,6 +392,7 @@ mod master {
         C(8, 48, 2, 41, 2, 33),
         V(0),
     ];
+
     const UPPERCASE_V: [Command; 3] = [M(0, 0), L(16, 48), L(32, 0)];
     const UPPERCASE_W: [Command; 5] = [M(0, 0), L(4, 48), L(16, 23), L(28, 48), L(32, 0)];
     const UPPERCASE_X: [Command; 4] = [M(2, 0), L(30, 48), M(30, 0), L(2, 48)];

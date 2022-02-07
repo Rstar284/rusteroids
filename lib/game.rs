@@ -1,5 +1,4 @@
 use rand::SeedableRng;
-// use rand_core::SeedableRng;
 use rand_pcg::Pcg32;
 
 use crate::asteroid::Asteroid;
@@ -50,16 +49,23 @@ use State::*;
 
 impl Game {
     pub fn new() -> Self {
+        let screen = web_sys::window().unwrap().screen().unwrap();
+        let inner_height = screen.height();
+        let inner_width = screen.width();
+
         let bounds = Size {
-            width: 1200.0,
-            height: 900.0,
+            height: *&inner_height.unwrap() as f64,
+            width: *&inner_width.unwrap() as f64,
         };
+
         let font = FontLibrary {
             small: Font::new(32.0),
             medium: Font::new(96.0),
             large: Font::new(144.0),
         };
+
         let high_score = 0;
+
         Game {
             state: Game::main_title(&bounds, &font, high_score),
             bounds,
@@ -71,12 +77,16 @@ impl Game {
     fn main_title(bounds: &Size, font: &FontLibrary, high_score: u32) -> State {
         let mut rng = Pcg32::seed_from_u64(1979);
         let center = bounds.center();
-        let mut text = font.large.typeset_line(Align::Center, &center, "ASTEROIDS");
+        let mut text = font
+            .medium
+            .typeset_line(Align::Center, &center, "RUSTEROIDS");
+
         text.extend(font.small.typeset_line(
             Align::Center,
             &Point::new(center.x, center.y + 3.0 * font.small.height()),
             "PRESS START",
         ));
+
         text.extend(Game::display_score(high_score, bounds, font));
         MainTitle {
             text,
@@ -107,10 +117,11 @@ impl Game {
         )
     }
 
-    pub fn step(&mut self, dt: f64, controls: Controls) -> () {
+    pub fn step(&mut self, dt: f64, controls: Controls) {
         if dt <= 0.0 {
-            return ();
+            ()
         }
+
         match &mut self.state {
             MainTitle { asteroids, .. } => {
                 if controls.start() {
@@ -119,6 +130,7 @@ impl Game {
                     asteroids_step(dt, &self.bounds, asteroids);
                 }
             }
+
             LevelIntro {
                 score,
                 number,
@@ -139,6 +151,7 @@ impl Game {
                     asteroids_step(dt, &self.bounds, asteroids);
                 }
             }
+
             ActiveLevel {
                 score: _,
                 level,

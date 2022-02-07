@@ -1,5 +1,5 @@
 {
-  "name": "@xryshirfxn/asteroids",
+  "name": "@xryshirfxn/rusteroids",
   "version": "1.0.0",
   "scripts": {
     "lint": "cargo-clippy && npx eslint .",
