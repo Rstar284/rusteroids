@@ -10,8 +10,8 @@ body {
     line-height: 20px;
     background: radial-gradient(
         farthest-corner circle at center,
-        #21272d,
-        #17191b
+        rgb(46, 46, 46),
+        black
     );
 }
 
@@ -50,6 +50,7 @@ canvas .flat {
     grid-template-columns: repeat(6, 6rem);
     grid-auto-flow: column;
     justify-items: center;
+    color: #6d7175;
 }
 
 span {
@@ -59,6 +60,6 @@ span {
     padding: calc(0.25rem - 2px) 0.5rem;
     text-align: center;
     box-sizing: border-box;
-    border: 1.5px solid #2f3133;
+    border: 1.5px solid #6d7175;
     border-radius: 4px;
 }
