@@ -1,6 +1,5 @@
-use std::collections::BTreeMap as Map;
-
 use crate::geometry::{Point, Polyline};
+use std::collections::BTreeMap as Map;
 
 pub enum Align {
     Left,

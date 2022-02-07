@@ -6,6 +6,7 @@ version = 3
 name = "asteroids"
 version = "1.0.0"
 dependencies = [
+ "getrandom",
  "rand",
  "rand_core",
  "rand_pcg",
@@ -31,8 +32,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "418d37c8b1d42553c93648be529cb70f920d3baf8ef469b74b9638df426e0b4c"
 dependencies = [
  "cfg-if",
+ "js-sys",
  "libc",
  "wasi",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "js-sys"
+version = "0.3.56"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a38fc24e30fd564ce974c02bf1d337caddff65be6cc4735a1f7eab22a7440f04"
+dependencies = [
+ "wasm-bindgen",
 ]
 
 [[package]]

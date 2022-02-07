@@ -1,7 +1,6 @@
 node_modules/
+src/wasm/
 target/
-build/
-dist/
 
 package-lock.json
 package.json

@@ -4,16 +4,10 @@
   "scripts": {
     "lint": "cargo-clippy && npx eslint .",
     "fmt": "npx prettier --write .",
-    "build": "bash build.sh"
+    "build": "bash build.sh",
+    "serve": "node server.js"
   },
-  "devDependencies": {
-    "@wasm-tool/wasm-pack-plugin": "^1.6.0",
-    "css-loader": "^6.6.0",
-    "eslint": "^8.8.0",
-    "html-webpack-plugin": "^5.5.0",
-    "prettier": "^2.5.1",
-    "style-loader": "^3.3.1",
-    "webpack": "^5.68.0",
-    "webpack-cli": "^4.9.2"
+  "dependencies": {
+    "express": "^4.17.2"
   }
 }

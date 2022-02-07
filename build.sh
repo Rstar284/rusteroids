@@ -9,10 +9,7 @@ cargo \
     --release
 
 wasm-bindgen \
-    --target "bundler" \
+    --target "web" \
     --no-typescript \
-    --out-dir "build" \
+    --out-dir "src/wasm" \
     "target/wasm32-unknown-unknown/release/asteroids.wasm"
-
-npx webpack \
-    -c "webpack.config.js"
